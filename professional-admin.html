@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - BMI Gossip Girl</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 45, 135, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 45, 135, 0.2);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #ff2d87;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff2d87;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 45, 135, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 45, 135, 0.1);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ff2d87, #ff4fa0);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #999999;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-change {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #4ade80;
+        }
+
+        /* Controls */
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ff2d87;
+            box-shadow: 0 0 0 3px rgba(255, 45, 135, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-dropdown {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-dropdown:focus {
+            outline: none;
+            border-color: #ff2d87;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff2d87, #ff4fa0);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 45, 135, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            border-color: rgba(255, 45, 135, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-id {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-time {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 45, 135, 0.2);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .post-content {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .post-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 45, 135, 0.2);
+            border-top: 3px solid #ff2d87;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .post-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .post-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff2d87;
+        }
+
+        .modal-text {
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">👑</div>
+                <div class="logo-text">Admin Panel</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    🔄 Refresh
+                </button>
+                <button class="btn" onclick="exportData()">
+                    📊 Export Data
+                </button>
+                <a href="/" class="btn btn-secondary">
+                    👁️ View Site
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-value" id="totalPosts">0</div>
+                <div class="stat-label">Total Posts</div>
+                <div class="stat-change">All time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-value" id="todayPosts">0</div>
+                <div class="stat-label">Today's Posts</div>
+                <div class="stat-change">Last 24 hours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value" id="recentPosts">0</div>
+                <div class="stat-label">Recent Activity</div>
+                <div class="stat-change">Last hour</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="avgPosts">0</div>
+                <div class="stat-label">Daily Average</div>
+                <div class="stat-change">Last 7 days</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search posts..." id="searchInput" onkeyup="searchPosts()">
+            </div>
+            <select class="filter-dropdown" id="filterSelect" onchange="filterPosts()">
+                <option value="all">All Posts</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="recent">Last Hour</option>
+            </select>
+            <button class="btn btn-danger" onclick="deleteSelected()">
+                🗑️ Delete Selected
+            </button>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="posts-grid" id="postsGrid">
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading posts...
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-title">Delete Post?</div>
+            <div class="modal-text">Are you sure you want to delete this post? This action cannot be undone.</div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data management
+        let allPosts = [];
+        let filteredPosts = [];
+        let selectedPosts = new Set();
+        let postToDelete = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            setInterval(refreshData, 30000); // Auto-refresh every 30 seconds
+        });
+
+        // Load data from localStorage
+        function loadData() {
+            try {
+                allPosts = JSON.parse(localStorage.getItem('gossips') || '[]');
+                filteredPosts = [...allPosts];
+                updateStats();
+                renderPosts();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('postsGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Error loading data</h3><p>Please refresh the page</p></div>';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            const totalPosts = allPosts.length;
+            const todayPosts = allPosts.filter(p => new Date(p.timestamp) >= today).length;
+            const recentPosts = allPosts.filter(p => new Date(p.timestamp) >= oneHourAgo).length;
+            const weekPosts = allPosts.filter(p => new Date(p.timestamp) >= oneWeekAgo).length;
+            const avgPosts = Math.round(weekPosts / 7);
+
+            document.getElementById('totalPosts').textContent = totalPosts;
+            document.getElementById('todayPosts').textContent = todayPosts;
+            document.getElementById('recentPosts').textContent = recentPosts;
+            document.getElementById('avgPosts').textContent = avgPosts;
+        }
+
+        // Render posts
+        function renderPosts() {
+            const grid = document.getElementById('postsGrid');
+            
+            if (filteredPosts.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><h3>No posts found</h3><p>No posts match your current filters</p></div>';
+                return;
+            }
+
+            grid.innerHTML = filteredPosts.map(post => `
+                <div class="post-card" data-id="${post.id}">
+                    <div class="post-header">
+                        <div class="post-meta">
+                            <div class="post-id">ID: #${post.id}</div>
+                            <div class="post-time">${formatTime(new Date(post.timestamp))}</div>
+                        </div>
+                        <div class="post-actions">
+                            <input type="checkbox" class="post-checkbox" data-id="${post.id}" onchange="toggleSelection(${post.id})">
+                            <button class="action-btn" onclick="viewPost(${post.id})">👁️</button>
+                            <button class="action-btn delete" onclick="deletePost(${post.id})">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        ${escapeHtml(post.text)}
+                    </div>
+                    <div class="post-footer">
+                        <div class="post-status">
+                            <div class="status-dot"></div>
+                            <span>Active</span>
+                        </div>
+                        <div>${getTimeAgo(new Date(post.timestamp))}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter posts
+        function filterPosts() {
+            const filter = document.getElementById('filterSelect').value;
+            const now = new Date();
+            
+            switch(filter) {
+                case 'all':
+                    filteredPosts = [...allPosts];
+                    break;
+                case 'today':
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    filteredPosts = allPosts.filter(p => new Date(p.timestamp) >= today);
+                    break;
+                case 'week':
+                    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filteredPosts = allPosts.filter(p => new Date(p.timestamp) >= oneWeekAgo);
+                    break;
+                case 'recent':
+                    const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+                    filteredPosts = allPosts.filter(p => new Date(p.timestamp) >= oneHourAgo);
+                    break;
+            }
+            
+            renderPosts();
+        }
+
+        // Search posts
+        function searchPosts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (query === '') {
+                filterPosts();
+                return;
+            }
+            
+            filteredPosts = allPosts.filter(post => 
+                post.text.toLowerCase().includes(query) ||
+                post.id.toString().includes(query)
+            );
+            
+            renderPosts();
+        }
+
+        // Toggle selection
+        function toggleSelection(postId) {
+            if (selectedPosts.has(postId)) {
+                selectedPosts.delete(postId);
+            } else {
+                selectedPosts.add(postId);
+            }
+        }
+
+        // Delete post
+        function deletePost(postId) {
+            postToDelete = postId;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (postToDelete) {
+                allPosts = allPosts.filter(p => p.id !== postToDelete);
+                localStorage.setItem('gossips', JSON.stringify(allPosts));
+                closeModal();
+                loadData();
+            }
+        }
+
+        // Delete selected posts
+        function deleteSelected() {
+            if (selectedPosts.size === 0) {
+                alert('Please select posts to delete');
+                return;
+            }
+            
+            if (confirm(`Delete ${selectedPosts.size} selected posts?`)) {
+                allPosts = allPosts.filter(p => !selectedPosts.has(p.id));
+                localStorage.setItem('gossips', JSON.stringify(allPosts));
+                selectedPosts.clear();
+                loadData();
+            }
+        }
+
+        // View post
+        function viewPost(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (post) {
+                alert(`Post Details:\n\nID: ${post.id}\nTime: ${new Date(post.timestamp).toLocaleString()}\n\n${post.text}`);
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            postToDelete = null;
+        }
+
+        // Refresh data
+        function refreshData() {
+            loadData();
+        }
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(allPosts, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            const exportFileDefaultName = `gossip-data-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        // Utility functions
+        function formatTime(date) {
+            return date.toLocaleString();
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            const intervals = {
+                year: 31536000,
+                month: 2592000,
+                day: 86400,
+                hour: 3600,
+                minute: 60
+            };
+            
+            for (let i in intervals) {
+                const interval = Math.floor(seconds / intervals[i]);
+                if (interval >= 1) {
+                    return interval + " " + i + (interval > 1 ? "s" : "") + " ago";
+                }
+            }
+            return "just now";
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
